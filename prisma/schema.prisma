@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id       String   @id @default(uuid())
+  name     String
+  email    String
+  password String
+  admin    Boolean  @default(false)
+  created  DateTime @default(now())
+}
+
+model Weeding {
+  id        String      @id @default(uuid())
+  name      String
+  Portfolio Portfolio[]
+}
+
+model Portfolio {
+  id        String  @id @default(uuid())
+  imgPath   String
+  width     Int
+  height    Int
+  preview   Boolean
+  weeding   Weeding @relation(fields: [weedingId], references: [id])
+  weedingId String
+}
+
+model Comments {
+  id      String @id @default(uuid())
+  name    String
+  comment String
+}
+
+model Video {
+  id String @id @default(uuid())
+  name String
+  videoPath String
+}
