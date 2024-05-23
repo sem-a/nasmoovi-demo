@@ -8,6 +8,7 @@ const { prisma } = require("../prisma/prisma-client");
 const all = async (req, res) => {
     try {
         const comments = await prisma.comments.findMany();
+        console.log(comments)
         return res.status(200).json(comments);
     } catch (err) {
         return res.status(500).json({
