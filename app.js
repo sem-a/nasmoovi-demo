@@ -10,7 +10,8 @@ const app = express();
 
 app.use(logger("dev"));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use(cors());
+
+app.use(cors({ origin: 'https://sem-a-nasmoovi-demo-bad7.twc1.net' }))
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
