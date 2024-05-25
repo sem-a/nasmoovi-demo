@@ -59,6 +59,9 @@ const uploadPhoto = multer({ storage: storagePhoto });
 const uploadVideo = multer({
     storage: storageVideo,
     fileFilter: fileFilterVideo,
+    limits: {
+        fileSize: 1 * 1024 * 1024 * 1024
+    }
 });
 
 module.exports = {
