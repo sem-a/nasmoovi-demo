@@ -45,7 +45,7 @@ const forPreview = async (req, res) => {
     try {
         const portfolio = await prisma.portfolio.findMany({
             where: {
-                weedingId: id,
+                weddingId: id,
                 preview: true,
             },
         });
@@ -58,16 +58,16 @@ const forPreview = async (req, res) => {
 };
 
 /**
- * @route POST /api/portfolio/:weeding
+ * @route POST /api/portfolio/:wedding
  * @desc Добавить в портфолио
  * @access Public
  */
 const forId = async (req, res) => {
-    const weeding = req.params.weeding;
+    const wedding = req.params.wedding;
     try {
         const portfolio = await prisma.portfolio.findMany({
             where: {
-                weedingId: weeding,
+                weddingId: wedding,
             },
         });
         return res.status(200).json(portfolio);
@@ -85,7 +85,7 @@ const forId = async (req, res) => {
  */
 const add = async (req, res) => {
     try {
-        const { id: weedingId, preview } = req.params;
+        const { id: weddingId, preview } = req.params;
         const filePaths = req.files.map((file) => file.path);
 
         for (let i = 0; i < filePaths.length; i++) {
@@ -96,12 +96,12 @@ const add = async (req, res) => {
                     imgPath: element,
                     width: size.width,
                     height: size.height,
-                    weedingId,
+                    weddingId,
                     preview: false,
                 },
             });
         }
-        return res.status(200).json({ weedingId: weedingId });
+        return res.status(200).json({ weddingId: weddingId });
     } catch (err) {
         return res
             .status(400)
@@ -142,7 +142,7 @@ const alldel = async (req, res) => {
     try {
         const portfolio = await prisma.portfolio.findMany({
             where: {
-                weedingId: id,
+                weddingId: id,
             },
             select: {
                 imgPath: true,
@@ -155,7 +155,7 @@ const alldel = async (req, res) => {
 
         await prisma.portfolio.deleteMany({
             where: {
-                weedingId: id,
+                weddingId: id,
             },
         });
         return res.status(204).json({

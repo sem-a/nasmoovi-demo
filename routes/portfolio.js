@@ -15,7 +15,7 @@ const { uploadPhoto } = require("../middleware/upload");
 router.get("/", all);
 
 // api/portfolio/:weeding
-router.get("/:weeding", forId);
+router.get("/:wedding", forId);
 
 router.put("/update-preview", editPreview);
 

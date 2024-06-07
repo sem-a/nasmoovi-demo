@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/api/user", require("./routes/users"));
-app.use("/api/weeding", require("./routes/weeding"));
+app.use("/api/wedding", require("./routes/wedding"));
 app.use("/api/portfolio", require("./routes/portfolio"));
 app.use("/api/comment", require("./routes/comment"));
 app.use("/api/video", require("./routes/video"));

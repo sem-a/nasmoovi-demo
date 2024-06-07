@@ -19,10 +19,11 @@ model Users {
   created  DateTime @default(now())
 }
 
-model Weeding {
-  id        String      @id @default(uuid())
-  name      String
-  Portfolio Portfolio[]
+model Wedding {
+  id          String      @id @default(uuid())
+  name        String
+  description String
+  Portfolio   Portfolio[]
 }
 
 model Portfolio {
@@ -31,8 +32,8 @@ model Portfolio {
   width     Int
   height    Int
   preview   Boolean
-  weeding   Weeding @relation(fields: [weedingId], references: [id])
-  weedingId String
+  wedding   Wedding @relation(fields: [weddingId], references: [id])
+  weddingId String
 }
 
 model Comments {
@@ -42,7 +43,7 @@ model Comments {
 }
 
 model Video {
-  id String @id @default(uuid())
-  name String
+  id        String @id @default(uuid())
+  name      String
   videoPath String
 }
