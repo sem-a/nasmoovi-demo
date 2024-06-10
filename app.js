@@ -23,9 +23,14 @@ app.use("/api/portfolio", require("./routes/portfolio"));
 app.use("/api/comment", require("./routes/comment"));
 app.use("/api/video", require("./routes/video"));
 
-app.use(express.static(path.join(__dirname, "client/build")));
+app.use(express.static(path.join(__dirname, "build")));
 app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "client/build", "index.html"));
-});
+    const userAgent = req.headers["user-agent"];
+    if (userAgent.includes("Googlebot") || userAgent.includes("bingbot") || userAgent.includes("Yandex"))  {
+      res.sendFile(path.resolve(__dirname, "build", "index.html"));
+    } else {
+      res.sendFile(path.resolve(__dirname, "build", "200.html"));
+    }
+  });
 
 module.exports = app;
