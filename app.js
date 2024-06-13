@@ -33,6 +33,7 @@ app.use("/api/video", require("./routes/video"));
 //   }
 // });
 
+app.use(require('prerender-node').set('prerenderToken', 'nIW1d3yHpTgjCasqoBJr'));
 app.use(express.static(path.join(__dirname, "build")));
 
 
