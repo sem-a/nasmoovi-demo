@@ -9,6 +9,10 @@
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
+  "reactSnap": {
+    "visit": ["/", "/video", "/wedding", "/500", "/404"],
+    "waitFor": 3000
+  },
   "dependencies": {
     "@ant-design/icons": "^5.3.6",
     "@prisma/client": "^5.12.1",
