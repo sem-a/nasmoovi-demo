@@ -29,13 +29,28 @@ app.use((req, res, next) => {
   
   if (userAgent.includes("Yandex")) {
     const requestedPage = req.url.substring(1); // Получаем запрошенную страницу из URL
-    if (pages.includes(requestedPage)) {
-      const htmlCopy = fs.readFileSync(path.join("build", requestedPage), "utf8");
+    let filePath = '';
+
+    switch (requestedPage) {
+      case '':
+        filePath = path.join("build", "200.html");
+      case 'wedding':
+        filePath = path.join("build", "wedding", "index.html");
+        break;
+      case 'video':
+        filePath = path.join("build", "video","index.html");
+        break;
+      default:
+        filePath = path.join("build", "404.html");
+        break;
+    }
+
+    try {
+      const htmlCopy = fs.readFileSync(filePath, "utf8");
       res.send(htmlCopy);
-    } else {
-      // Если страница не найдена, отдаем страницу 200.html
-      const htmlCopy = fs.readFileSync(path.join("build", "404.html"), "utf8");
-      res.send(htmlCopy);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
     }
   } else {
     next();
