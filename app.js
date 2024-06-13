@@ -22,19 +22,27 @@ app.use("/api/portfolio", require("./routes/portfolio"));
 app.use("/api/comment", require("./routes/comment"));
 app.use("/api/video", require("./routes/video"));
 
-app.use(express.static(path.join(__dirname, "build")));
+const pages = ['200.html', '404.html', 'wedding/index.html', 'video/index.html'];
 
 app.use((req, res, next) => {
   const userAgent = req.headers["user-agent"];
-
+  
   if (userAgent.includes("Yandex")) {
-    const htmlCopy = fs.readFileSync("build/200.html", "utf8");
-    res.send(htmlCopy);
+    const requestedPage = req.url.substring(1); // Получаем запрошенную страницу из URL
+    if (pages.includes(requestedPage)) {
+      const htmlCopy = fs.readFileSync(path.join("build", requestedPage), "utf8");
+      res.send(htmlCopy);
+    } else {
+      // Если страница не найдена, отдаем страницу 200.html
+      const htmlCopy = fs.readFileSync(path.join("build", "404.html"), "utf8");
+      res.send(htmlCopy);
+    }
   } else {
     next();
   }
 });
 
+app.use(express.static(path.join(__dirname, "build")));
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "build", "index.html"));
 });
