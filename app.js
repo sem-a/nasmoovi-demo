@@ -22,21 +22,19 @@ app.use("/api/portfolio", require("./routes/portfolio"));
 app.use("/api/comment", require("./routes/comment"));
 app.use("/api/video", require("./routes/video"));
 
+app.use(express.static(path.join(__dirname, "build")));
+
 app.use((req, res, next) => {
   const userAgent = req.headers["user-agent"];
 
   if (userAgent.includes("Yandex")) {
-    app.get("*", (req, res) => {
-      res.sendFile(path.resolve(__dirname, "build", "200.html"));
-    });
-    // const htmlCopy = fs.readFileSync("build/200.html", "utf8");
-    // res.send(htmlCopy);
+    const htmlCopy = fs.readFileSync("build/200.html", "utf8");
+    res.send(htmlCopy);
   } else {
     next();
   }
 });
 
-app.use(express.static(path.join(__dirname, "build")));
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "build", "index.html"));
 });
