@@ -26,8 +26,11 @@ app.use((req, res, next) => {
   const userAgent = req.headers["user-agent"];
 
   if (userAgent.includes("Yandex")) {
-    const htmlCopy = fs.readFileSync("build/200.html", "utf8");
-    res.send(htmlCopy);
+    app.get("*", (req, res) => {
+      res.sendFile(path.resolve(__dirname, "build", "200.html"));
+    });
+    // const htmlCopy = fs.readFileSync("build/200.html", "utf8");
+    // res.send(htmlCopy);
   } else {
     next();
   }
