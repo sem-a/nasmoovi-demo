@@ -34,6 +34,7 @@ app.use((req, res, next) => {
     switch (requestedPage) {
       case '':
         filePath = path.join("build", "200.html");
+        break;
       case 'wedding':
         filePath = path.join("build", "wedding", "index.html");
         break;
