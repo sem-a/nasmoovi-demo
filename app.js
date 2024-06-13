@@ -22,17 +22,18 @@ app.use("/api/portfolio", require("./routes/portfolio"));
 app.use("/api/comment", require("./routes/comment"));
 app.use("/api/video", require("./routes/video"));
 
-app.use((req, res, next) => {
-  const userAgent = req.headers["user-agent"];
+// app.use((req, res, next) => {
+//   const userAgent = req.headers["user-agent"];
 
-  if (userAgent.includes("Yandex")) {
-    const htmlCopy = fs.readFileSync("build/index.html", "utf8");
-    res.send(htmlCopy);
-  } else {
-    next();
-  }
-});
+//   if (userAgent.includes("Yandex")) {
+//     const htmlCopy = fs.readFileSync("build/index.html", "utf8");
+//     res.send(htmlCopy);
+//   } else {
+//     next();
+//   }
+// });
 
+app.use(require('prerender-node').set('prerenderToken', 'nIW1d3yHpTgjCasqoBJr'));
 app.use(express.static(path.join(__dirname, "build")));
 
 
