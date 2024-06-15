@@ -22,8 +22,6 @@ app.use("/api/portfolio", require("./routes/portfolio"));
 app.use("/api/comment", require("./routes/comment"));
 app.use("/api/video", require("./routes/video"));
 
-const pages = ['200.html', '404.html', 'wedding/index.html', 'video/index.html'];
-
 app.use((req, res, next) => {
   if (req.headers.host.startsWith("www.")) {
     const newHost = req.headers.host.replace("www.", "");
