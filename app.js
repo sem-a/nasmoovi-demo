@@ -30,15 +30,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
-app.use((req, res, next) => {
-  if (req.secure) {
-    next();
-  } else {
-    res.redirect('https://' + req.headers.host + req.url);
-  }
-});
-
 app.use((req, res, next) => {
   if (req.url === '/index.html' || req.url === '/index.php') {
     res.redirect(301, '/');
