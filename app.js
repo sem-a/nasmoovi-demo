@@ -23,6 +23,14 @@ app.use("/api/comment", require("./routes/comment"));
 app.use("/api/video", require("./routes/video"));
 
 app.use((req, res, next) => {
+  if (req.headers.host.startsWith("www.")) {
+    const newHost = req.headers.host.replace("www.", "");
+    return res.redirect(301, req.protocol + "://" + newHost + req.originalUrl);
+  }
+  next();
+});
+
+app.use((req, res, next) => {
   if (req.url === '/index.html' || req.url === '/index.php') {
     res.redirect(301, '/');
   } else {
@@ -34,7 +42,7 @@ app.use((req, res, next) => {
   const userAgent = req.headers["user-agent"];
   const isJsEnabled = req.query.jsEnabled;
 
-  res.send(isJsEnabled);
+  console.log(isJsEnabled)
   
   if ( userAgent.includes("Yandex") || userAgent.includes("Google") || userAgent.includes("bingbot")) {
     const requestedPage = req.url.substring(1);
