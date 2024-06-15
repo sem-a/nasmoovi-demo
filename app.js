@@ -25,10 +25,36 @@ app.use("/api/video", require("./routes/video"));
 const pages = ['200.html', '404.html', 'wedding/index.html', 'video/index.html'];
 
 app.use((req, res, next) => {
+  if (req.headers.host.startsWith("www.")) {
+    const newHost = req.headers.host.replace("www.", "");
+    return res.redirect(301, req.protocol + "://" + newHost + req.originalUrl);
+  }
+  next();
+});
+
+
+app.use((req, res, next) => {
+  if (req.secure) {
+    next();
+  } else {
+    res.redirect('https://' + req.headers.host + req.url);
+  }
+});
+
+app.use((req, res, next) => {
+  if (req.url === '/index.html' || req.url === '/index.php') {
+    res.redirect(301, '/');
+  } else {
+    next();
+  }
+});
+
+app.use((req, res, next) => {
   const userAgent = req.headers["user-agent"];
+  const isJsEnabled = req.query.jsEnabled;
   
-  if (userAgent.includes("Yandex")) {
-    const requestedPage = req.url.substring(1); // Получаем запрошенную страницу из URL
+  if ( userAgent.includes("Yandex") || userAgent.includes("Google") || userAgent.includes("bingbot") || !isJsEnabled) {
+    const requestedPage = req.url.substring(1);
     let filePath = '';
 
     switch (requestedPage) {
