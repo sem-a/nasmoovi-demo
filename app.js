@@ -41,8 +41,10 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   const userAgent = req.headers["user-agent"];
   const isJsEnabled = req.query.jsEnabled;
+
+  res.send(isJsEnabled);
   
-  if ( userAgent.includes("Yandex") || userAgent.includes("Google") || userAgent.includes("bingbot") || !isJsEnabled) {
+  if ( userAgent.includes("Yandex") || userAgent.includes("Google") || userAgent.includes("bingbot")) {
     const requestedPage = req.url.substring(1);
     let filePath = '';
 
