@@ -27,13 +27,14 @@ model Wedding {
 }
 
 model Portfolio {
-  id        String  @id @default(uuid())
-  imgPath   String
-  width     Int
-  height    Int
-  preview   Boolean
-  wedding   Wedding @relation(fields: [weddingId], references: [id])
-  weddingId String
+  id            String  @id @default(uuid())
+  imgPath       String
+  width         Int
+  height        Int
+  preview       Boolean
+  previewNumber Int?
+  wedding       Wedding @relation(fields: [weddingId], references: [id])
+  weddingId     String
 }
 
 model Comments {

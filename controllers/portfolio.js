@@ -23,7 +23,7 @@ const all = async (req, res) => {
 };
 
 const editPreview = async (req, res) => {
-    const { id, preview } = req.body;
+    const { id, preview, previewNumber } = req.body;
     try {
         await prisma.portfolio.update({
             where: {
@@ -31,6 +31,7 @@ const editPreview = async (req, res) => {
             },
             data: {
                 preview,
+                previewNumber,
             },
         });
     } catch (err) {

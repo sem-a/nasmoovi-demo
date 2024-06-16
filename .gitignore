@@ -6,3 +6,4 @@ uploads/portfolio/*.jpg
 uploads/video/*.mov
 uploads/video/*.mp4
 uploads/video/*.avi
+staticfiles
