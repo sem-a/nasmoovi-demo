@@ -41,7 +41,7 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   const userAgent = req.headers["user-agent"];
   
-  if ( userAgent.includes("Yandex") || userAgent.includes("Google") || userAgent.includes("bingbot") ) {
+  if ( userAgent.includes("Google") || userAgent.includes("bingbot") ) {
     const requestedPage = req.url.substring(1);
     let filePath = '';
 
