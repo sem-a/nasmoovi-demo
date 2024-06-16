@@ -1,3 +1,5 @@
-# https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: https://wed.nasmoovi.ru
+Allow: https://wed.nasmoovi.ru/video
+Allow: https://wed.nasmoovi.ru/wedding
+Disallow: https://wed.nasmoovi.ru/admin/*
