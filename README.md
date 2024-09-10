@@ -1,1 +1,1 @@
-Приложение NASMOOVI
+Приложение NASMOOVI.
