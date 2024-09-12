@@ -1,8 +1,7 @@
 const { prisma } = require("../prisma/prisma-client");
 const fs = require("fs");
 const util = require("util");
-
-const unlinkAsync = util.promisify(fs.unlink);
+const { s3 } = require("../cloud-s3/cloud");
 
 /**
  * @route POST /api/video/
@@ -29,25 +28,28 @@ const add = async (req, res) => {
     try {
         const { name } = req.body;
         // Поскольку загружается один файл, используем req.file, а не req.files
-        const filePath = req.file.path;
+
+        // Загрузка файла в Yandex Cloud Storage
+        let upload = await s3.Upload(
+            {
+                buffer: req.file.buffer, // Используем buffer из объекта файла
+            },
+            "/video/"
+        );
 
         // Создаем запись в базе данных для видео
         const video = await prisma.video.create({
             data: {
-                videoPath: filePath,
+                videoPath: `https://nasmoovi-backet.storage.yandexcloud.net/${upload.Key}`,
                 name: name,
             },
         });
 
         // Возвращаем ответ с успешным статусом
-        // Предполагается, что переменная weddingId должна быть определена в вашем коде
-        // Если она не определена, замените её на соответствующее значение
         return res.status(200).json({ video });
     } catch (err) {
-        console.log(err)
-        return res
-            .status(400)
-            .json({ message: "Возникла неизвестная ошибка", error: err });
+        console.log(err);
+        return res.status(400).json({ message: "Возникла ошибка при загрузке видео файла", error: err });
     }
 };
 /**
@@ -70,11 +72,10 @@ const del = async (req, res) => {
 
          // Проверяем, существует ли информация о видео
          if (video) {
-            // Путь к файлу видео
-            const videoPath = `${video.videoPath}`;
 
-            // Удаляем файл видео с файловой системы
-            await unlinkAsync(videoPath);
+            const pathParts = video.videoPath.split("/");
+            const filePath = pathParts[pathParts.length - 1];
+            await s3.Remove(`/video/${filePath}`);
 
             // Удаляем запись о видео из базы данных
             await prisma.video.deleteMany({

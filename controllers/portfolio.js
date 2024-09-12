@@ -3,8 +3,7 @@ const sizeOf = require("image-size");
 const fs = require("fs");
 const path = require("path");
 const util = require("util");
-
-const unlinkAsync = util.promisify(fs.unlink);
+const { s3 } = require("../cloud-s3/cloud");
 
 /**
  * @route POST /api/portfolio/
@@ -23,7 +22,7 @@ const all = async (req, res) => {
 };
 
 const editPreview = async (req, res) => {
-    const { id, preview, previewNumber } = req.body;
+    const { id, preview } = req.body;
     try {
         await prisma.portfolio.update({
             where: {
@@ -31,11 +30,9 @@ const editPreview = async (req, res) => {
             },
             data: {
                 preview,
-                previewNumber,
             },
         });
     } catch (err) {
-        console.error(err);
         return res.status(500).json({
             message: "Произошла неизвестная ошибка!",
         });
@@ -88,14 +85,22 @@ const forId = async (req, res) => {
 const add = async (req, res) => {
     try {
         const { id: weddingId, preview } = req.params;
-        const filePaths = req.files.map((file) => file.path);
+        const files = req.files;
 
-        for (let i = 0; i < filePaths.length; i++) {
-            const element = filePaths[i];
-            const size = sizeOf(element);
-            const portfolio = await prisma.portfolio.create({
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const size = sizeOf(file.buffer);
+
+            // Загрузка файла в Yandex Cloud Storage
+            let upload = await s3.Upload(
+                {
+                    buffer: file.buffer, // Используем buffer из объекта файла
+                },
+                "/portfolio/"
+            );
+            await prisma.portfolio.create({
                 data: {
-                    imgPath: element,
+                    imgPath: `https://nasmoovi-backet.storage.yandexcloud.net/${upload.Key}`,
                     width: size.width,
                     height: size.height,
                     weddingId,
@@ -103,11 +108,14 @@ const add = async (req, res) => {
                 },
             });
         }
-        return res.status(200).json({ weddingId: weddingId });
+
+        return res.status(200).json({ weddingId });
     } catch (err) {
-        return res
-            .status(400)
-            .json({ message: "Возникла неизвестная ошибка", error: err });
+        console.error(err);
+        return res.status(400).json({
+            message: "Возникла ошибка при загрузке файлов",
+            error: err,
+        });
     }
 };
 
@@ -152,24 +160,31 @@ const alldel = async (req, res) => {
         });
 
         for (const image of portfolio) {
-            await unlinkAsync(image.imgPath);
+            // Извлечение пути из ссылки
+            const pathParts = image.imgPath.split("/");
+            const filePath = pathParts[pathParts.length - 1];
+            await s3.Remove(`/portfolio/${filePath}`);
         }
 
+        // Удаление записей из базы данных
         await prisma.portfolio.deleteMany({
             where: {
                 weddingId: id,
             },
         });
+
         return res.status(204).json({
             message: "OK",
         });
     } catch (err) {
         return res
             .status(400)
-            .json({ message: "Возникала неизвестная ошибка" });
+            .json({
+                message: "Возникла ошибка при удалении файлов",
+                error: err,
+            });
     }
 };
-
 /**
  * @route POST /api/portfolio/edit/:id
  * @desc изменить портфолио
