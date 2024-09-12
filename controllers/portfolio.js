@@ -1,8 +1,5 @@
 const { prisma } = require("../prisma/prisma-client");
 const sizeOf = require("image-size");
-const fs = require("fs");
-const path = require("path");
-const util = require("util");
 const { s3 } = require("../cloud-s3/cloud");
 
 /**
